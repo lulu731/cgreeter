@@ -1,8 +1,8 @@
 #ifndef _NATIVE_BYTE_ORDER_HPP_
 #define _NATIVE_BYTE_ORDER_HPP_
 
-#include <stddef.h>
+#include <cstddef>
 
-void ToNativeByteOrder( const size_t& aSize, const char *aBuffer );
+void ToNativeByteOrder( size_t aSize, char *aBuffer );
 
 #endif
