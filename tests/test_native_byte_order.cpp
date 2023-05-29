@@ -20,3 +20,19 @@ BOOST_AUTO_TEST_CASE( SizeIsTwoBytes)
     ToNativeByteOrder(aSize, aBuffer);
     BOOST_CHECK_EQUAL_COLLECTIONS( aBuffer, aBuffer + 4,  aExpected, aExpected + 4 );
 }
+
+BOOST_AUTO_TEST_CASE( FmSizeIsOneByte)
+{
+    size_t aSize;
+    char aBuffer[4] = { 46, 0, 0, 0 };
+    FmNativeByteOrder( aBuffer, aSize );
+    BOOST_CHECK_EQUAL( aSize, 46 );
+}
+
+BOOST_AUTO_TEST_CASE( FmSizeIsTwoBytes)
+{
+    size_t aSize;
+    char aBuffer[4] = { char(0xAB), char(0x2E), 0, 0 };
+    FmNativeByteOrder( aBuffer, aSize );
+    BOOST_CHECK_EQUAL( aSize, 0x2EAB );
+}
