@@ -5,6 +5,8 @@ find_package( Boost REQUIRED COMPONENTS unit_test_framework )
 set( SRCS
      test_native_byte_order.cpp
      ${CMAKE_SOURCE_DIR}/src/native_byte_order.cpp
+     test_request.cpp
+     ${CMAKE_SOURCE_DIR}/src/request.cpp
 )
 
 add_executable ( test
