@@ -7,6 +7,8 @@ set( SRCS
      ${CMAKE_SOURCE_DIR}/src/native_byte_order.cpp
      test_request.cpp
      ${CMAKE_SOURCE_DIR}/src/request.cpp
+     test_response.cpp
+     ${CMAKE_SOURCE_DIR}/src/response.cpp
 )
 
 add_executable ( test
