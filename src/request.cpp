@@ -1,21 +1,21 @@
 #include "request.hpp"
 
- void REQUEST::CreateSession( const string &aUsername, object &aJsonRequest ) {
-    aJsonRequest["type"] = "create_session";
-    aJsonRequest["username"] = aUsername;
+ void REQUEST::CreateSession( const string &aUsername, value &aJsonRequest ) {
+    aJsonRequest = { {"type", "create_session" },
+                { "username", aUsername } };
 }
 
 
-void REQUEST::PostAuthMessageResponse( const string &aResponse, object &aJsonRequest ) {
-    aJsonRequest["type"] = "post_auth_message_response";
-    aJsonRequest["response"] = aResponse;
+void REQUEST::PostAuthMessageResponse( const string &aResponse, value &aJsonRequest ) {
+    aJsonRequest  = { { "type", "post_auth_message_response" },
+    { "response", aResponse } };
 }
 
 
 void REQUEST::StartSession( const std::vector<string> &aCmd,
         const std::vector<string> &aEnv,
-        object &aJsonRequest ) {
-    aJsonRequest["type"] = "start_session";
+        value &aJsonRequest ) {
+
     array cmdArray;
     for (size_t i = 0; i < aCmd.size(); i++)
     {
@@ -28,11 +28,12 @@ void REQUEST::StartSession( const std::vector<string> &aCmd,
         envArray.emplace_back( aEnv[i] );
     }
 
-    aJsonRequest["cmd"] = cmdArray;
-    aJsonRequest["env"] = envArray;
+    aJsonRequest = { {"type", "start_session"},
+        { "cmd", cmdArray },
+        { "env", envArray} };
 }
 
 
-void REQUEST::CancelSession( object &aJsonRequest ) {
-    aJsonRequest["type"] = "cancel_session";
+void REQUEST::CancelSession( value &aJsonRequest ) {
+    aJsonRequest = { {"type", "cancel_session"} };
 }

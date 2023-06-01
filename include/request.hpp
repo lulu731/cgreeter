@@ -10,12 +10,13 @@ using namespace boost::json;
 class REQUEST
 {
 public:
-    static void CreateSession( const string &aUsername, object &aJsonRequest);
-    static void PostAuthMessageResponse( const string &aResponse, object &aJsonRequest );
+    static void CreateSession( const string &aUsername, value &aJsonRequest);
+    static void PostAuthMessageResponse( const string &aResponse, value &aJsonRequest );
     static void StartSession( const std::vector<string> &aCmd,
         const std::vector<string> &aEnv,
-        object &aJsonRequest );
-    static void CancelSession( object &aJsonRequest );
+        value &aJsonRequest );
+    static void CancelSession( value &aJsonRequest );
+    virtual value* GetJsonRequest() = 0;
 };
 
 #endif
