@@ -1,19 +1,33 @@
 #include "response.hpp"
 #include <boost/test/unit_test.hpp>
+#include <typeinfo>
 
-BOOST_AUTO_TEST_CASE( TestNextReqForSuccess  )
+BOOST_AUTO_TEST_CASE( TestSuccessResponseCreator  )
 {
     const char *ResponseSuccess = "{\"type\": \"success\"}";
     const value JsonResp = boost::json::parse( ResponseSuccess );
 
-    RESPONSE_SUCCESS Response( JsonResp );
+    RESPONSE Response( JsonResp );
 
-    REQUEST *Req;
-    Req = Response.CreateNextRequest();
-    value *JsonReq;
-    JsonReq = Req->GetJsonRequest();
+    BOOST_CHECK( Response.IsSuccess() && !Response.IsError() && !Response.IsAuthMessage() );
+}
 
-    BOOST_CHECK( JsonReq == nullptr );
 
-    delete Req;
+BOOST_AUTO_TEST_CASE( TestErrorResponseCreator  )
+{
+    const char *ResponseError = "{\"type\": \"error\",\
+    \"error_type\": \"auth_error\", \"description\": \"invalid_request\"}";
+    const value JsonResp = boost::json::parse( ResponseError );
+    RESPONSE Response( JsonResp );
+    BOOST_CHECK( !Response.IsSuccess() && Response.IsError() && !Response.IsAuthMessage() );
+}
+
+
+BOOST_AUTO_TEST_CASE( TestAuthMessageResponseCreator  )
+{
+    const char *ResponseAuthMessage = "{\"type\": \"auth_message\",\
+    \"auth_message_type\": \"secret\", \"auth_message\": \"Valid auth_message\"}";
+    const value JsonResp = boost::json::parse( ResponseAuthMessage );
+    RESPONSE Response( JsonResp );
+    BOOST_CHECK( !Response.IsSuccess() && !Response.IsError() && Response.IsAuthMessage() );
 }
