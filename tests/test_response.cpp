@@ -1,6 +1,8 @@
+#define BOOST_TEST_MODULE test response class
+
 #include "response.hpp"
-#include <boost/test/unit_test.hpp>
-#include <typeinfo>
+#include <boost/test/included/unit_test.hpp>
+#include <boost/json/src.hpp>
 
 BOOST_AUTO_TEST_CASE( TestSuccessResponseCreator  )
 {

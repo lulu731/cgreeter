@@ -1,5 +1,7 @@
+#define BOOST_TEST_MODULE test request class
+
 #include "request.hpp"
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <boost/json/src.hpp>
 
 BOOST_AUTO_TEST_CASE( CreateSessionRequest )
