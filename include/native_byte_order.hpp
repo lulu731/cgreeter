@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-void ToNativeByteOrder( size_t aSize, char *aBuffer );
-void FmNativeByteOrder( const char *aBuffer, size_t &aSize );
+void ToNativeByteOrder( size_t aSize, char* aBuffer );
+void FmNativeByteOrder( const char* aBuffer, size_t& aSize );
 
 #endif

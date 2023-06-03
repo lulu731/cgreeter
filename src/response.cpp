@@ -1,33 +1,36 @@
 #include "response.hpp"
 
-RESPONSE::RESPONSE( const value &aJsonResponse ) : m_JsonResponse( aJsonResponse )
+RESPONSE::RESPONSE( const value& aJsonResponse ) : m_JsonResponse( aJsonResponse )
 {
     string type = value_to<string>( value_to<object>( m_JsonResponse )["type"] );
-    if ( type == "success" )
+    if( type == "success" )
     {
         m_Type = SUCCESS;
     }
-    else if ( type == "error" )
+    else if( type == "error" )
     {
         m_Type = ERROR;
     }
-    else if ( type == "auth_message" )
+    else if( type == "auth_message" )
     {
         m_Type = AUTH_MESSAGE;
     }
 }
 
 
-bool RESPONSE::IsSuccess() {
+bool RESPONSE::IsSuccess()
+{
     return m_Type == SUCCESS;
 }
 
 
-bool RESPONSE::IsError() {
+bool RESPONSE::IsError()
+{
     return m_Type == ERROR;
 }
 
 
-bool RESPONSE::IsAuthMessage() {
+bool RESPONSE::IsAuthMessage()
+{
     return m_Type == AUTH_MESSAGE;
 }
