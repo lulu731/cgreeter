@@ -6,43 +6,53 @@
 
 BOOST_AUTO_TEST_CASE( CreateSessionRequest )
 {
-    const string aUsername = "test";
-    value aJsonRequest;
-    REQUEST::CreateSession( aUsername, aJsonRequest );
+    const MSG_TYPE mt = CREATE_SESSION;
+    const std::string aUsername = "test";
+    REQUEST req(mt, aUsername);
 
-    object aObjeReq = value_to<object>( aJsonRequest );
-    BOOST_CHECK_EQUAL( value_to<string>( aObjeReq["type"] ), "create_session" );
-    BOOST_CHECK_EQUAL( value_to<string>( aObjeReq["username"] ), aUsername );
+    const std::string message = req.GetMsg();
+    object aObjReq = value_to<object>( parse( string(message) ));
+
+    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "create_session" );
+    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["username"] ), aUsername );
 }
 
 BOOST_AUTO_TEST_CASE( PostAuthMessageResponseRequest )
 {
-    const string aResponse = "test";
-    value aJsonRequest;
-    REQUEST::PostAuthMessageResponse( aResponse, aJsonRequest );
-    object aObjReq = value_to<object>( aJsonRequest );
+    const MSG_TYPE mt = POST_AUTH_MESSAGE_RESPONSE;
+    const std::string aResponse = "test";
+    REQUEST req(mt, aResponse);
+
+    const std::string message = req.GetMsg();
+    object aObjReq = value_to<object>( parse( message ));
+
     BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "post_auth_message_response" );
     BOOST_CHECK_EQUAL( value_to<string>( aObjReq["response"] ), aResponse );
 }
 
 BOOST_AUTO_TEST_CASE( StartSessionRequest )
 {
-    const std::vector<string> aCmd = { "test", "test2" };
-    const std::vector<string> aEnv = { "test", "test2", "test3" };
-    value aJsonRequest;
-    REQUEST::StartSession( aCmd, aEnv, aJsonRequest );
-    object aObjReq = value_to<object>( aJsonRequest );
+    const MSG_TYPE mt = START_SESSION;
+    const std::vector<std::string> aCmd = { "test", "test2" };
+    const std::vector<std::string> aEnv = { "test", "test2", "test3" };
+    REQUEST req(mt, aCmd, aEnv);
+
+    const std::string message = req.GetMsg();
+    object aObjReq = value_to<object>( parse( message ) );
+
     BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "start_session" );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["cmd"] ).at(0), aCmd.at(0) );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["env"] ).at(0), aEnv.at(0) );
+    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["cmd"] ).at(0), string(aCmd[0]) );
+    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["env"] ).at(0), string(aEnv[0]) );
     BOOST_CHECK_EQUAL( value_to<array>( aObjReq["cmd"] ).size(), aCmd.size() );
     BOOST_CHECK_EQUAL( value_to<array>( aObjReq["env"] ).size(), aEnv.size() );
 }
 
 BOOST_AUTO_TEST_CASE( CancelSessionRequest )
 {
-    value aJsonRequest;
-    REQUEST::CancelSession( aJsonRequest );
-    object aObjReq = value_to<object>( aJsonRequest );
+    const MSG_TYPE mt = CANCEL_SESSION;
+    REQUEST req(mt);
+
+    const std::string message = req.GetMsg();
+    object aObjReq = value_to<object>( parse( message ) );
     BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "cancel_session" );
 }
