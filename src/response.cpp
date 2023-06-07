@@ -1,8 +1,13 @@
-#include "response.hpp"
+#include "include/response.hpp"
 
-RESPONSE::RESPONSE( const value& aJsonResponse ) : m_JsonResponse( aJsonResponse )
+#include <boost/json.hpp>
+
+#include "include/types.hpp"
+
+RESPONSE::RESPONSE( const JsonValue& aJsonResponse ) : m_JsonResponse( aJsonResponse )
 {
-    string type = value_to<string>( value_to<object>( m_JsonResponse )["type"] );
+    JsonString type = boost::json::value_to<JsonString>(
+            boost::json::value_to<JsonObject>( m_JsonResponse )["type"] );
     if( type == "success" )
     {
         m_Type = SUCCESS;

@@ -1,8 +1,11 @@
 #define BOOST_TEST_MODULE test request class
 
-#include "request.hpp"
+#include "include/request.hpp"
+
 #include <boost/test/included/unit_test.hpp>
 #include <boost/json/src.hpp>
+
+#include "include/types.hpp"
 
 BOOST_AUTO_TEST_CASE( CreateSessionRequest )
 {
@@ -11,10 +14,10 @@ BOOST_AUTO_TEST_CASE( CreateSessionRequest )
     REQUEST           req( mt, aUsername );
 
     const std::string message = req.GetMsg();
-    object            aObjReq = value_to<object>( parse( string( message ) ) );
+    JsonObject        aObjReq = boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
 
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "create_session" );
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["username"] ), aUsername );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "create_session" );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["username"] ), aUsername );
 }
 
 BOOST_AUTO_TEST_CASE( PostAuthMessageResponseRequest )
@@ -24,10 +27,11 @@ BOOST_AUTO_TEST_CASE( PostAuthMessageResponseRequest )
     REQUEST           req( mt, aResponse );
 
     const std::string message = req.GetMsg();
-    object            aObjReq = value_to<object>( parse( message ) );
+    JsonObject        aObjReq = boost::json::value_to<JsonObject>( boost::json::parse( message ) );
 
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "post_auth_message_response" );
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["response"] ), aResponse );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ),
+                       "post_auth_message_response" );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["response"] ), aResponse );
 }
 
 BOOST_AUTO_TEST_CASE( StartSessionRequest )
@@ -38,13 +42,15 @@ BOOST_AUTO_TEST_CASE( StartSessionRequest )
     REQUEST                        req( mt, aCmd, aEnv );
 
     const std::string message = req.GetMsg();
-    object            aObjReq = value_to<object>( parse( message ) );
+    JsonObject        aObjReq = boost::json::value_to<JsonObject>( boost::json::parse( message ) );
 
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "start_session" );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["cmd"] ).at( 0 ), string( aCmd[0] ) );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["env"] ).at( 0 ), string( aEnv[0] ) );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["cmd"] ).size(), aCmd.size() );
-    BOOST_CHECK_EQUAL( value_to<array>( aObjReq["env"] ).size(), aEnv.size() );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "start_session" );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjReq["cmd"] ).at( 0 ),
+                       JsonString( aCmd[0] ) );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjReq["env"] ).at( 0 ),
+                       JsonString( aEnv[0] ) );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjReq["cmd"] ).size(), aCmd.size() );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjReq["env"] ).size(), aEnv.size() );
 }
 
 BOOST_AUTO_TEST_CASE( CancelSessionRequest )
@@ -53,6 +59,6 @@ BOOST_AUTO_TEST_CASE( CancelSessionRequest )
     REQUEST        req( mt );
 
     const std::string message = req.GetMsg();
-    object            aObjReq = value_to<object>( parse( message ) );
-    BOOST_CHECK_EQUAL( value_to<string>( aObjReq["type"] ), "cancel_session" );
+    JsonObject        aObjReq = boost::json::value_to<JsonObject>( boost::json::parse( message ) );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "cancel_session" );
 }

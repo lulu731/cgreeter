@@ -1,4 +1,5 @@
-#include "native_byte_order.hpp"
+#include "include/native_byte_order.hpp"
+
 #include <cstddef>
 
 void ToNativeByteOrder( size_t aSize, char* aBuffer )
@@ -11,11 +12,11 @@ void ToNativeByteOrder( size_t aSize, char* aBuffer )
     }
 }
 
-void FmNativeByteOrder( const char* aBuffer, size_t& aSize )
+void FmNativeByteOrder( const char* aBuffer, size_t* aSize )
 {
     for( size_t i = 0; i < 4; i++ )
     {
-        aSize = aSize << 8;
-        aSize += aBuffer[3 - i] & 0xFF;
+        *aSize = *aSize << 8;
+        *aSize += aBuffer[3 - i] & 0xFF;
     }
 }

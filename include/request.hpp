@@ -2,10 +2,9 @@
 #define _REQUEST_HPP_
 
 #include <string>
-#include <boost/json.hpp>
 #include <vector>
 
-using namespace boost::json;
+#include "include/types.hpp"
 
 enum MSG_TYPE
 {
@@ -18,22 +17,24 @@ enum MSG_TYPE
 class REQUEST
 {
 private:
-    MSG_TYPE            m_MsgType;
-    string              m_StringField;
-    std::vector<string> m_Cmd;
-    std::vector<string> m_Env;
-    void                CreateSession( const string& aUsername, value& aJsonRequest );
-    void                PostAuthMessageResponse( const string& aResponse, value& aJsonRequest );
-    void StartSession( const std::vector<string>& aCmd, const std::vector<string>& aEnv,
-                       value& aJsonRequest );
-    void CancelSession( value& aJsonRequest );
+    MSG_TYPE                m_MsgType;
+    JsonString              m_StringField;
+    std::vector<JsonString> m_Cmd;
+    std::vector<JsonString> m_Env;
+    std::string             m_Msg;
+    void                    SetMSG();
+    void                    CreateSession( const JsonString* aUsername, JsonValue* aJsonRequest );
+    void PostAuthMessageResponse( const JsonString* aResponse, JsonValue* aJsonRequest );
+    void StartSession( const std::vector<JsonString>& aCmd, const std::vector<JsonString>& aEnv,
+                       JsonValue* aJsonRequest );
+    void CancelSession( JsonValue* aJsonRequest );
 
 public:
-    REQUEST( MSG_TYPE aMsgType );
+    explicit REQUEST( MSG_TYPE aMsgType );
     REQUEST( MSG_TYPE aMsgType, const std::string& aStringField );
     REQUEST( MSG_TYPE aType, const std::vector<std::string> aField,
              const std::vector<std::string> aEnv );
-    const std::string GetMsg();
+    const std::string GetMsg() const;
 };
 
 #endif

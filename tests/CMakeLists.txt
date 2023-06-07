@@ -1,6 +1,6 @@
 enable_testing()
 
-include_directories( ${CMAKE_SOURCE_DIR}/include )
+include_directories( ${CMAKE_SOURCE_DIR} )
 
 add_executable ( test_native_byte_order
     test_native_byte_order.cpp

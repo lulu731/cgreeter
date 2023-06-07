@@ -1,9 +1,11 @@
 #ifndef _RESPONSE_HPP_
 #define _RESPONSE_HPP_
 
-#include <boost/json.hpp>
+//#include <boost/json.hpp>
 
-using namespace boost::json;
+//using namespace boost::json;
+
+#include "include/types.hpp"
 
 enum RESPONSE_TYPE
 {
@@ -15,16 +17,16 @@ enum RESPONSE_TYPE
 class RESPONSE
 {
 protected:
-    const value m_JsonResponse;
+    const JsonValue m_JsonResponse;
 
 private:
     RESPONSE_TYPE m_Type;
 
 public:
-    RESPONSE( const value& aJsonResponse );
+    explicit RESPONSE( const JsonValue& aJsonResponse );
     bool IsSuccess();
     bool IsError();
     bool IsAuthMessage();
 };
 
-#endif
+#endif // _RESPONSE_HPP_
