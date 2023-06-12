@@ -4,10 +4,10 @@
 
 #include "include/types.hpp"
 
-RESPONSE::RESPONSE( const JsonValue& aJsonResponse ) : m_JsonResponse( aJsonResponse )
+RESPONSE::RESPONSE( const JsonValue& aJsonResponse )
 {
     JsonString type = boost::json::value_to<JsonString>(
-            boost::json::value_to<JsonObject>( m_JsonResponse )["type"] );
+            boost::json::value_to<JsonObject>( aJsonResponse )["type"] );
     if( type == "success" )
     {
         m_Type = SUCCESS;
@@ -23,19 +23,25 @@ RESPONSE::RESPONSE( const JsonValue& aJsonResponse ) : m_JsonResponse( aJsonResp
 }
 
 
-bool RESPONSE::IsSuccess()
+RESPONSE_TYPE RESPONSE::GetType() const
+{
+    return m_Type;
+}
+
+
+bool RESPONSE::IsSuccess() const
 {
     return m_Type == SUCCESS;
 }
 
 
-bool RESPONSE::IsError()
+bool RESPONSE::IsError() const
 {
     return m_Type == ERROR;
 }
 
 
-bool RESPONSE::IsAuthMessage()
+bool RESPONSE::IsAuthMessage() const
 {
     return m_Type == AUTH_MESSAGE;
 }

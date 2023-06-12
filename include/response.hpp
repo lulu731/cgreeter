@@ -17,16 +17,15 @@ enum RESPONSE_TYPE
 class RESPONSE
 {
 protected:
-    const JsonValue m_JsonResponse;
-
 private:
     RESPONSE_TYPE m_Type;
 
 public:
     explicit RESPONSE( const JsonValue& aJsonResponse );
-    bool IsSuccess();
-    bool IsError();
-    bool IsAuthMessage();
+    RESPONSE_TYPE GetType() const;
+    bool          IsSuccess() const;
+    bool          IsError() const;
+    bool          IsAuthMessage() const;
 };
 
 #endif // _RESPONSE_HPP_
