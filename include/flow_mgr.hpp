@@ -12,13 +12,14 @@ private:
     REQUEST*    m_Request = nullptr;
     RESPONSE*   m_Response = nullptr;
     std::string m_Password;
+    bool        m_CancelSession = false;
 
 public:
-    FLOW_MGR( /* args */ );
     ~FLOW_MGR();
     void      SetCreateSessionRequest( const std::string& aUsername );
     void      SetPassword( const std::string& aPassword );
     void      SetResponse( RESPONSE* aResponse );
+    void      CancelSession();
     void      UpdateRequest();
     REQUEST*  GetRequest() const;
     RESPONSE* GetResponse() const;

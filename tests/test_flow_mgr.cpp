@@ -69,3 +69,36 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
 
     BOOST_CHECK( !SuccessRequest );
 }
+
+BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
+{
+    // Then send jsonRequest to the server, and then build a response
+    JsonValue jsonResponse = { { "type", "auth_message" },
+                               { "auth_message_type", "visible" },
+                               { "auth_message", "password: " } };
+    RESPONSE* response = new RESPONSE( jsonResponse );
+    BOOST_CHECK( response->IsAuthMessage() );
+
+    FlowMgr.SetResponse( response );
+    BOOST_CHECK( FlowMgr.GetResponse()->IsAuthMessage() );
+
+    // User cancels session
+    FlowMgr.CancelSession();
+    FlowMgr.UpdateRequest();
+
+    REQUEST* request = FlowMgr.GetRequest();
+
+    const std::string message = request->GetMsg();
+    JsonObject        aObjReq = boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
+
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "cancel_session" );
+
+    JsonValue successJsonResponse = { { "type", "success" } };
+    RESPONSE* successResponse = new RESPONSE( successJsonResponse );
+    FlowMgr.SetResponse( successResponse );
+    FlowMgr.UpdateRequest();
+
+    REQUEST* SuccessRequest = FlowMgr.GetRequest();
+
+    BOOST_CHECK( !SuccessRequest );
+}
