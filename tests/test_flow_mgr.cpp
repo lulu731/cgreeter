@@ -17,51 +17,64 @@ struct test_flow_mgr
     ~test_flow_mgr() {}
     void setup()
     {
-        // Client gets UserName, then create request
+        // Client gets UserName, then FlowMgr creates CreateSession request
         FlowMgr.SetCreateSessionRequest( "test" );
     }
 };
 
 
+const JsonValue jsonAuthMessageResponse = { { "type", "auth_message" },
+                                            { "auth_message_type", "visible" },
+                                            { "auth_message", "password: " } };
+
+const JsonValue JsonSuccessResponse = { { "type", "success" } };
+
+RESPONSE* GetResponseFmServer( const JsonValue& aJsonResponse )
+{
+    RESPONSE* response = new RESPONSE( aJsonResponse );
+    return response;
+}
+
+
+JsonObject GetRequestMessageAsObject( const REQUEST* aRequest )
+{
+    const std::string message = aRequest->GetMsg();
+    return boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
+}
+
+
 BOOST_FIXTURE_TEST_CASE( TestInitiateFlowMgr, test_flow_mgr )
 {
-    const std::string message = FlowMgr.GetRequest()->GetMsg();
-    JsonObject        aObjReq = boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
-
-    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "create_session" );
-    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["username"] ), "test" );
+    JsonObject aObjMessage = GetRequestMessageAsObject( FlowMgr.GetRequest() );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["type"] ), "create_session" );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["username"] ), "test" );
 }
+
 
 BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
 {
-    // Then send jsonRequest to the server, and then build a response
-    JsonValue jsonResponse = { { "type", "auth_message" },
-                               { "auth_message_type", "visible" },
-                               { "auth_message", "password: " } };
-    RESPONSE* response = new RESPONSE( jsonResponse );
-    BOOST_CHECK( response->IsAuthMessage() );
+    // CreateSession request has been sent, AuthMessage response is received from server
+    // Response object is created
+    RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
 
     FlowMgr.SetResponse( response );
     BOOST_CHECK( FlowMgr.GetResponse()->IsAuthMessage() );
 
-    FlowMgr.UpdateRequest();
     // User writes his password
     std::string Password = "aPassword";
     FlowMgr.SetPassword( Password );
     FlowMgr.UpdateRequest();
 
-    REQUEST* request = FlowMgr.GetRequest();
     // Send password to server
+    REQUEST* request = FlowMgr.GetRequest();
 
-    const std::string message = request->GetMsg();
-    JsonObject        aObjReq = boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
-
-    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ),
+    JsonObject aObjMessage = GetRequestMessageAsObject( request );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["type"] ),
                        "post_auth_message_response" );
-    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["response"] ), Password );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["response"] ), Password );
 
-    JsonValue successJsonResponse = { { "type", "success" } };
-    RESPONSE* successResponse = new RESPONSE( successJsonResponse );
+    // Receive succes response
+    RESPONSE* successResponse = GetResponseFmServer( JsonSuccessResponse );
     FlowMgr.SetResponse( successResponse );
     FlowMgr.UpdateRequest();
 
@@ -73,28 +86,21 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
 BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
 {
     // Then send jsonRequest to the server, and then build a response
-    JsonValue jsonResponse = { { "type", "auth_message" },
-                               { "auth_message_type", "visible" },
-                               { "auth_message", "password: " } };
-    RESPONSE* response = new RESPONSE( jsonResponse );
-    BOOST_CHECK( response->IsAuthMessage() );
+    RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
 
     FlowMgr.SetResponse( response );
     BOOST_CHECK( FlowMgr.GetResponse()->IsAuthMessage() );
 
-    // User cancels session
+    // User cancels session creation
     FlowMgr.CancelSession();
     FlowMgr.UpdateRequest();
 
     REQUEST* request = FlowMgr.GetRequest();
 
-    const std::string message = request->GetMsg();
-    JsonObject        aObjReq = boost::json::value_to<JsonObject>( parse( JsonString( message ) ) );
+    JsonObject aObjMessage = GetRequestMessageAsObject( request );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["type"] ), "cancel_session" );
 
-    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjReq["type"] ), "cancel_session" );
-
-    JsonValue successJsonResponse = { { "type", "success" } };
-    RESPONSE* successResponse = new RESPONSE( successJsonResponse );
+    RESPONSE* successResponse = GetResponseFmServer( JsonSuccessResponse );
     FlowMgr.SetResponse( successResponse );
     FlowMgr.UpdateRequest();
 
