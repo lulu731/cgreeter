@@ -9,16 +9,23 @@
 class FLOW_MGR
 {
 private:
-    REQUEST*    m_Request = nullptr;
-    RESPONSE*   m_Response = nullptr;
-    std::string m_Password;
-    bool        m_CancelSession = false;
+    REQUEST*                 m_Request = nullptr;
+    RESPONSE*                m_Response = nullptr;
+    std::string              m_Password;
+    bool                     m_PasswordSet = false;
+    bool                     m_CancelSession = false;
+    std::vector<std::string> m_Command;
+    bool                     m_CommandSet = false;
+    std::vector<std::string> m_Environment;
+    bool                     m_EnvironmentSet = false;
 
 public:
     ~FLOW_MGR();
     void      SetCreateSessionRequest( const std::string& aUsername );
     void      SetPassword( const std::string& aPassword );
     void      SetResponse( RESPONSE* aResponse );
+    void      SetCommand( const std::vector<std::string>& aCommand );
+    void      SetEnvironment( const std::vector<std::string>& aEnvironment );
     void      CancelSession();
     void      UpdateRequest();
     REQUEST*  GetRequest() const;

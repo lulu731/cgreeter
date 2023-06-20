@@ -73,14 +73,33 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
                        "post_auth_message_response" );
     BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["response"] ), Password );
 
-    // Receive succes response
-    RESPONSE* successResponse = GetResponseFmServer( JsonSuccessResponse );
-    FlowMgr.SetResponse( successResponse );
+    // Receive success response, ready to start session
+    response = GetResponseFmServer( JsonSuccessResponse );
+    FlowMgr.SetResponse( response );
+
+    const std::vector<std::string> Command = { "start --session" };
+    FlowMgr.SetCommand( Command );
+    const std::vector<std::string> Env = { "envVariable" };
+    FlowMgr.SetEnvironment( Env );
     FlowMgr.UpdateRequest();
 
-    REQUEST* SuccessRequest = FlowMgr.GetRequest();
+    request = FlowMgr.GetRequest();
 
-    BOOST_CHECK( !SuccessRequest );
+    aObjMessage = GetRequestMessageAsObject( request );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonString>( aObjMessage["type"] ), "start_session" );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjMessage["cmd"] ).at( 0 ),
+                       JsonString( Command[0] ) );
+    BOOST_CHECK_EQUAL( boost::json::value_to<JsonArray>( aObjMessage["env"] ).at( 0 ),
+                       JsonString( Env[0] ) );
+
+    // Receive success response, session is started
+    response = GetResponseFmServer( JsonSuccessResponse );
+    FlowMgr.SetResponse( response );
+    FlowMgr.UpdateRequest();
+
+    request = FlowMgr.GetRequest();
+
+    BOOST_CHECK( !request );
 }
 
 BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
