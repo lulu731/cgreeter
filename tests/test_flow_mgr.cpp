@@ -29,6 +29,10 @@ const JsonValue jsonAuthMessageResponse = { { "type", "auth_message" },
 
 const JsonValue JsonSuccessResponse = { { "type", "success" } };
 
+const JsonValue JsonAuthErrorResponse = { { "type", "error" },
+                                          { "error_type", "auth_error" },
+                                          { "description", "Wrong password" } };
+
 RESPONSE* GetResponseFmServer( const JsonValue& aJsonResponse )
 {
     RESPONSE* response = new RESPONSE( aJsonResponse );
@@ -126,4 +130,40 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
     REQUEST* SuccessRequest = FlowMgr.GetRequest();
 
     BOOST_CHECK( !SuccessRequest );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( TestCreateSessionWrongPassword, test_flow_mgr )
+{
+    // CreateSession request has been sent, AuthMessage response is received from server
+    // Response object is created
+    RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
+
+    FlowMgr.SetResponse( response );
+    //BOOST_CHECK( FlowMgr.GetResponse()->IsAuthMessage() );
+
+    // User writes his password
+    std::string Password = "aPassword";
+
+    REQUEST* request = nullptr;
+
+    for( size_t Attempt = 0; Attempt < MAX_SEND_PASSWD_ATTEMPTS; Attempt++ )
+    {
+        FlowMgr.SetPassword( Password );
+        FlowMgr.UpdateRequest();
+
+        // Send password to server
+        request = FlowMgr.GetRequest();
+
+        // Receive bad password error response
+        response = GetResponseFmServer( JsonAuthErrorResponse );
+        if( Attempt == MAX_SEND_PASSWD_ATTEMPTS - 1 )
+        {
+            BOOST_CHECK_THROW( FlowMgr.SetResponse( response ), FLOW_MGR_EXCEPTION );
+        }
+        else
+            FlowMgr.SetResponse( response );
+    }
+
+    BOOST_CHECK( !request );
 }

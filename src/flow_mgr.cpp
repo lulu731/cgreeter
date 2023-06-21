@@ -28,6 +28,9 @@ void FLOW_MGR::SetResponse( RESPONSE* aResponse )
     if( m_Response )
         delete m_Response;
     m_Response = aResponse;
+
+    if( m_Response->IsError() && m_SendPasswdAttempt++ >= MAX_SEND_PASSWD_ATTEMPTS - 1 )
+        throw FLOW_MGR_EXCEPTION( WRONG_PASSWD );
 }
 
 
@@ -92,4 +95,9 @@ REQUEST* FLOW_MGR::GetRequest() const
 RESPONSE* FLOW_MGR::GetResponse() const
 {
     return m_Response;
+}
+
+
+FLOW_MGR_EXCEPTION::FLOW_MGR_EXCEPTION( const std::string& aWhat ) : m_What( aWhat )
+{
 }
