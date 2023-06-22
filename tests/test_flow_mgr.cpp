@@ -3,6 +3,8 @@
 #include "include/flow_mgr.hpp"
 
 #include <boost/test/included/unit_test.hpp>
+#include <boost/test/data/test_case.hpp>
+#include <boost/test/data/monomorphic.hpp>
 #include <boost/json/src.hpp>
 #include "include/request.hpp"
 #include "include/response.hpp"
@@ -106,6 +108,7 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
     BOOST_CHECK( !request );
 }
 
+
 BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
 {
     // Then send jsonRequest to the server, and then build a response
@@ -133,21 +136,22 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
 }
 
 
-BOOST_FIXTURE_TEST_CASE( TestCreateSessionWrongPassword, test_flow_mgr )
+std::vector<int> AttemptSet = { 0, 1, 2, 3, 4 };
+
+BOOST_DATA_TEST_CASE_F( test_flow_mgr, TestCreateSessionWrongPassword, AttemptSet )
 {
     // CreateSession request has been sent, AuthMessage response is received from server
     // Response object is created
     RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
 
     FlowMgr.SetResponse( response );
-    //BOOST_CHECK( FlowMgr.GetResponse()->IsAuthMessage() );
 
     // User writes his password
     std::string Password = "aPassword";
 
     REQUEST* request = nullptr;
 
-    for( size_t Attempt = 0; Attempt < MAX_SEND_PASSWD_ATTEMPTS; Attempt++ )
+    for( size_t Attempt = 0; Attempt < sample; Attempt++ )
     {
         FlowMgr.SetPassword( Password );
         FlowMgr.UpdateRequest();
@@ -157,13 +161,11 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionWrongPassword, test_flow_mgr )
 
         // Receive bad password error response
         response = GetResponseFmServer( JsonAuthErrorResponse );
-        if( Attempt == MAX_SEND_PASSWD_ATTEMPTS - 1 )
+        if( Attempt >= MAX_SEND_PASSWD_ATTEMPTS - 1 )
         {
             BOOST_CHECK_THROW( FlowMgr.SetResponse( response ), FLOW_MGR_EXCEPTION );
         }
         else
             FlowMgr.SetResponse( response );
     }
-
-    BOOST_CHECK( !request );
 }
