@@ -1,6 +1,7 @@
-enable_testing()
-
 include_directories( ${CMAKE_SOURCE_DIR} )
+
+set( CMAKE_CXX_FLAGS
+    "-g -O0 -Wall -fprofile-arcs -ftest-coverage" )
 
 add_executable ( test_native_byte_order
     test_native_byte_order.cpp

@@ -12,3 +12,10 @@ include_directories( ${CMAKE_SOURCE_DIR}/include )
 
 add_subdirectory( ${CMAKE_SOURCE_DIR}/src )
 add_subdirectory( ${CMAKE_SOURCE_DIR}/tests )
+
+add_custom_target( report
+    COMMAND mkdir -p report
+    COMMAND ctest
+    COMMAND lcov -c -d . -o report/coverage.info --exclude '/usr/*'
+    COMMAND genhtml report/coverage.info -o report
+    COMMENT "Building report" )
