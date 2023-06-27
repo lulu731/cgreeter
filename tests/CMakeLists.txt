@@ -24,7 +24,7 @@ add_executable ( test_flow_mgr
     ${CMAKE_SOURCE_DIR}/src/response.cpp
     ${CMAKE_SOURCE_DIR}/src/flow_mgr.cpp )
 
-add_test( NAME native COMMAND test_native_byte_order )
-add_test( NAME request COMMAND test_request )
-add_test( NAME response COMMAND test_response )
-add_test( NAME flow_mgr COMMAND test_flow_mgr )
+add_test( NAME native COMMAND $<TARGET_FILE:test_native_byte_order> )
+add_test( NAME request COMMAND $<TARGET_FILE:test_request> )
+add_test( NAME response COMMAND $<TARGET_FILE:test_response> )
+add_test( NAME flow_mgr COMMAND $<TARGET_FILE:test_flow_mgr> )

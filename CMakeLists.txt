@@ -13,9 +13,15 @@ include_directories( ${CMAKE_SOURCE_DIR}/include )
 add_subdirectory( ${CMAKE_SOURCE_DIR}/src )
 add_subdirectory( ${CMAKE_SOURCE_DIR}/tests )
 
+find_program( LCOV_COMMAND NAMES lcov )
+find_program( GENHTML_COMMMAND NAMES genhtml )
+
 add_custom_target( report
     COMMAND mkdir -p report
     COMMAND ctest
-    COMMAND lcov -c -d . -o report/coverage.info --exclude '/usr/*'
-    COMMAND genhtml report/coverage.info -o report
+    COMMAND ${LCOV_COMMAND} -c -d . -o report/coverage.info --exclude '/usr/*'
+    COMMAND ${GENHTML_COMMMAND} report/coverage.info -o report
     COMMENT "Building report" )
+
+find_program( MEMORYCHECK_COMMAND NAMES valgrind )
+set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
