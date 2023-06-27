@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( SizeIsTwoBytes )
 
 BOOST_AUTO_TEST_CASE( FmSizeIsOneByte )
 {
-    size_t aSize;
+    size_t aSize = 0;
     char   aBuffer[4] = { 46, 0, 0, 0 };
     FmNativeByteOrder( aBuffer, &aSize );
     BOOST_CHECK_EQUAL( aSize, 46 );
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE( FmSizeIsOneByte )
 
 BOOST_AUTO_TEST_CASE( FmSizeIsTwoBytes )
 {
-    size_t aSize;
+    size_t aSize = 0;
     char   aBuffer[4] = { static_cast<char>( 0xAB ), static_cast<char>( 0x2E ), 0, 0 };
     FmNativeByteOrder( aBuffer, &aSize );
     BOOST_CHECK_EQUAL( aSize, 0x2EAB );
