@@ -25,3 +25,6 @@ add_custom_target( report
 
 find_program( MEMORYCHECK_COMMAND NAMES valgrind )
 set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+
+add_custom_target( memcheck
+    COMMAND ctest -T memcheck )
