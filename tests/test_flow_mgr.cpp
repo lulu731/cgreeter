@@ -149,15 +149,13 @@ BOOST_DATA_TEST_CASE_F( test_flow_mgr, TestCreateSessionWrongPassword, AttemptSe
     // User writes his password
     std::string Password = "aPassword";
 
-    REQUEST* request = nullptr;
-
-    for( size_t Attempt = 0; Attempt < sample; Attempt++ )
+    for( int Attempt = 0; Attempt < sample; Attempt++ )
     {
         FlowMgr.SetPassword( Password );
         FlowMgr.UpdateRequest();
 
         // Send password to server
-        request = FlowMgr.GetRequest();
+        //REQUEST* request = FlowMgr.GetRequest();
 
         // Receive bad password error response
         response = GetResponseFmServer( JsonAuthErrorResponse );
