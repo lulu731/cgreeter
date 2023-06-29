@@ -1,5 +1,3 @@
-include( CTest )
-
 #
 # test_native_byte_order
 #

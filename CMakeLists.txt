@@ -17,6 +17,8 @@ add_subdirectory( lib )
 add_subdirectory( src )
 add_subdirectory( tests )
 
+include( CTest )
+
 add_custom_target( execute_tests
     COMMAND ctest )
 
