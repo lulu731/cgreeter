@@ -1,28 +1,50 @@
-include_directories( ${CMAKE_SOURCE_DIR} )
+include( CTest )
 
-set( CMAKE_CXX_FLAGS
-    "-g -O0 -Wall -fprofile-arcs -ftest-coverage" )
-
+#
+# test_native_byte_order
+#
 add_executable ( test_native_byte_order
     test_native_byte_order.cpp
-    ${CMAKE_SOURCE_DIR}/src/native_byte_order.cpp
 )
 
+target_link_libraries( test_native_byte_order
+    PRIVATE greeterd_ipc
+)
+
+#
+# test_request
+#
 add_executable ( test_request
     test_request.cpp
-    ${CMAKE_SOURCE_DIR}/src/request.cpp
 )
 
+target_link_libraries( test_request
+    PRIVATE greeterd_ipc
+)
+
+#
+# test_response
+#
 add_executable ( test_response
     test_response.cpp
-    ${CMAKE_SOURCE_DIR}/src/response.cpp
 )
 
+target_link_libraries( test_response
+    PRIVATE greeterd_ipc
+)
+
+#
+# test_flow_mgr
+#
 add_executable ( test_flow_mgr
     test_flow_mgr.cpp
-    ${CMAKE_SOURCE_DIR}/src/request.cpp
-    ${CMAKE_SOURCE_DIR}/src/response.cpp
-    ${CMAKE_SOURCE_DIR}/src/flow_mgr.cpp )
+    ../src/flow_mgr.cpp
+)
+
+target_link_libraries( test_flow_mgr
+    PRIVATE greeterd_ipc
+)
+
 
 add_test( NAME native COMMAND $<TARGET_FILE:test_native_byte_order> )
 add_test( NAME request COMMAND $<TARGET_FILE:test_request> )

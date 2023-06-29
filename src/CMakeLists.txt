@@ -1,10 +1,5 @@
-include_directories( ${CMAKE_SOURCE_DIR} )
-
-set( SRCS
-     main.cpp
-     native_byte_order.cpp
-)
-
 add_executable ( cgreeter
-    ${SRCS}
-)
+    main.cpp )
+
+target_link_libraries( cgreeter
+    PRIVATE greeterd_ipc )
