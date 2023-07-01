@@ -31,9 +31,17 @@ const JsonValue jsonAuthMessageResponse = { { "type", "auth_message" },
 
 const JsonValue JsonSuccessResponse = { { "type", "success" } };
 
+const std::string aWrongPasswordResponse = "Wrong password";
+
 const JsonValue JsonAuthErrorResponse = { { "type", "error" },
                                           { "error_type", "auth_error" },
-                                          { "description", "Wrong password" } };
+                                          { "description", aWrongPasswordResponse } };
+
+const std::string aErrorResponse = "There was an error";
+
+const JsonValue JsonErrorResponse = { { "type", "error" },
+                                      { "error_type", "error" },
+                                      { "description", aErrorResponse } };
 
 RESPONSE* GetResponseFmServer( const JsonValue& aJsonResponse )
 {
@@ -109,7 +117,7 @@ BOOST_FIXTURE_TEST_CASE( TestCreateSessionToSuccess, test_flow_mgr )
 }
 
 
-BOOST_FIXTURE_TEST_CASE( TestCreateSessionToCancel, test_flow_mgr )
+BOOST_FIXTURE_TEST_CASE( TestCancelCreateSession, test_flow_mgr )
 {
     // Then send jsonRequest to the server, and then build a response
     RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
@@ -147,7 +155,7 @@ BOOST_DATA_TEST_CASE_F( test_flow_mgr, TestCreateSessionWrongPassword, AttemptSe
     FlowMgr.SetResponse( response );
 
     // User writes his password
-    std::string Password = "aPassword";
+    const std::string Password = "aPassword";
 
     for( int Attempt = 0; Attempt < sample; Attempt++ )
     {
@@ -166,4 +174,23 @@ BOOST_DATA_TEST_CASE_F( test_flow_mgr, TestCreateSessionWrongPassword, AttemptSe
         else
             FlowMgr.SetResponse( response );
     }
+}
+
+
+BOOST_FIXTURE_TEST_CASE( TestErrorResponse, test_flow_mgr )
+{
+    // Then send jsonRequest to the server, and then build a response
+    RESPONSE* response = GetResponseFmServer( jsonAuthMessageResponse );
+
+    FlowMgr.SetResponse( response );
+
+    // User enters password
+    const std::string Password = "aPassword";
+
+    FlowMgr.SetPassword( Password );
+    FlowMgr.UpdateRequest();
+
+    RESPONSE* errorResponse = GetResponseFmServer( JsonErrorResponse );
+
+    BOOST_CHECK_THROW( FlowMgr.SetResponse( errorResponse ), FLOW_MGR_EXCEPTION );
 }

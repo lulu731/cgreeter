@@ -29,8 +29,13 @@ void FLOW_MGR::SetResponse( RESPONSE* aResponse )
         delete m_Response;
     m_Response = aResponse;
 
-    if( m_Response->IsError() && m_SendPasswdAttempt++ >= MAX_SEND_PASSWD_ATTEMPTS - 1 )
-        throw FLOW_MGR_EXCEPTION( WRONG_PASSWD );
+    if( m_Response->IsError() )
+    {
+        if( m_Response->GetFieldType() == "error" )
+            throw FLOW_MGR_EXCEPTION( m_Response->GetFieldDescription() );
+        else if( m_SendPasswdAttempt++ >= MAX_SEND_PASSWD_ATTEMPTS - 1 )
+            throw FLOW_MGR_EXCEPTION( WRONG_PASSWD );
+    }
 }
 
 
