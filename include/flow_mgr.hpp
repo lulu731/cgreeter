@@ -8,9 +8,6 @@
 #include "include/request.hpp"
 #include "include/response.hpp"
 
-const int         MAX_SEND_PASSWD_ATTEMPTS = 3;
-const std::string WRONG_PASSWD = "Wrong password";
-
 class FLOW_MGR
 {
 private:

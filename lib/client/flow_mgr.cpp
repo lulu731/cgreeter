@@ -28,14 +28,6 @@ void FLOW_MGR::SetResponse( RESPONSE* aResponse )
     if( m_Response )
         delete m_Response;
     m_Response = aResponse;
-
-    if( m_Response->IsError() )
-    {
-        if( m_Response->GetFieldType() == "error" )
-            throw FLOW_MGR_EXCEPTION( m_Response->GetFieldDescription() );
-        else if( m_SendPasswdAttempt++ >= MAX_SEND_PASSWD_ATTEMPTS - 1 )
-            throw FLOW_MGR_EXCEPTION( WRONG_PASSWD );
-    }
 }
 
 
@@ -59,7 +51,6 @@ void FLOW_MGR::SetEnvironment( const std::vector<std::string>& aEnvironment )
 }
 
 
-// TODO(lulu): what if no password set?
 void FLOW_MGR::UpdateRequest()
 {
     if( m_Request )
@@ -68,6 +59,9 @@ void FLOW_MGR::UpdateRequest()
 
     switch( m_Response->GetType() )
     {
+    case ERROR:
+        m_Request = new REQUEST( CANCEL_SESSION );
+        break;
     case AUTH_MESSAGE:
         if( !m_CancelSession && m_PasswordSet )
         {
@@ -86,7 +80,6 @@ void FLOW_MGR::UpdateRequest()
             m_CommandSet = false;
             m_EnvironmentSet = false;
         }
-
     default: break;
     }
 }
@@ -96,6 +89,7 @@ REQUEST* FLOW_MGR::GetRequest() const
 {
     return m_Request;
 }
+
 
 RESPONSE* FLOW_MGR::GetResponse() const
 {
