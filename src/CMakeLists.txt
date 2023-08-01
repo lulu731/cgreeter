@@ -4,3 +4,7 @@ add_executable( cgreeter
 
 target_link_libraries( cgreeter
     PRIVATE client )
+
+install( TARGETS cgreeter
+         DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

@@ -41,3 +41,5 @@ if( ${ADD_QA} )
         COMMAND ctest -T memcheck )
 
 endif()
+
+include( GNUInstallDirs )
