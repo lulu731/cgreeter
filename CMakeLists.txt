@@ -17,12 +17,12 @@ option( ADD_QA "ON to enable testing, coverage and memcheck" )
 
 if( ${ADD_QA} )
 
+# ----- report target -----
     enable_testing()
     add_subdirectory( tests )
 
     find_program( LCOV_COMMAND NAMES lcov )
     find_program( GENHTML_COMMMAND NAMES genhtml )
-    find_program( MEMORYCHECK_COMMAND NAMES valgrind )
 
     add_custom_target( execute_tests
         COMMAND ctest )
@@ -35,7 +35,11 @@ if( ${ADD_QA} )
 
     add_dependencies( report execute_tests )
 
+#----- memcheck target with valgrind -----
+    find_program( MEMORYCHECK_COMMAND NAMES valgrind )
     set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+
+    include( CTest )
 
     add_custom_target( memcheck
         COMMAND ctest -T memcheck )
