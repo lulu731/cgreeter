@@ -19,7 +19,7 @@ private:
     REQUEST*  m_request;
     RESPONSE* m_response;
 
-    stream_protocol::socket* m_socket;
+    stream_protocol::socket* m_socket = nullptr;
     size_t                   Write( const char* aBuffer, size_t aSizeBuffer );
     size_t                   Read( char* aBuffer, size_t aSizeBuffer );
 

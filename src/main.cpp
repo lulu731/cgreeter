@@ -12,14 +12,6 @@
 
 int main( int argc, char* argv[] )
 {
-    /*std::cout << "argc = " << argc << std::endl;
-    std::cout << "argv[] = " << *argv << std::endl;
-    std::cout << argv[0] << std::endl;
-    std::cout << argv[1] << std::endl;
-    std::cout << argv[2] << std::endl;
-    std::cout << argv[3] << std::endl;
-    std::cout << argv[10] << std::endl;*/
-
     const std::string CmdOpt{ "--cmd" };
     const std::string Argv1{ argv[1] };
     if( Argv1 == CmdOpt )
@@ -33,6 +25,8 @@ int main( int argc, char* argv[] )
                 std::cout << "Enter username: ";
                 std::cin >> username;
                 client.InitFlowMgr( username );
+                client.Connect();
+
                 client.SendRequestToServer();
                 client.GetResponseFmServer();
 
@@ -42,33 +36,25 @@ int main( int argc, char* argv[] )
                     std::string password;
                     std::cin >> password;
                     client.SetPassword( password );
-                    client.UpdateFlow();
                     client.SendRequestToServer();
                     client.GetResponseFmServer();
 
                     if( client.GetResponse()->IsSuccess() )
                     {
-                        std::cout << "Authentication successful" << std::endl;
+                        const std::vector<std::string> aCommand{ Cmd };
+                        client.StartSession( aCommand );
+                        client.SendRequestToServer();
+                        client.GetResponseFmServer();
                         return EXIT_SUCCESS;
                     }
                 }
                 client.SendRequestToServer(); //Error : should be a cancel request
+                client.CloseSocket();
             }
         }
         return EXIT_FAILURE;
     }
 }
-/*else
-    {
-        std::cout << "Authentication failed" << std::endl;
-    }
-
-    else
-    {
-        std::cout << "Authentication failed" << std::endl;
-    }
-*/
-
 
 #else  // defined(BOOST_ASIO_HAS_LOCAL_SOCKETS)
 std::scout
