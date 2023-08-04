@@ -23,14 +23,15 @@ private:
     size_t                   Write( const char* aBuffer, size_t aSizeBuffer );
     size_t                   Read( char* aBuffer, size_t aSizeBuffer );
 
+    void SendRequestToServer();
+    void GetResponseFmServer();
 
 public:
     GREETD_CLIENT();
     ~GREETD_CLIENT();
     bool      Connect();
     void      InitFlowMgr( const std::string& aUsername ) const;
-    void      SendRequestToServer();
-    void      GetResponseFmServer();
+    void      CommunicateWithServer();
     RESPONSE* GetResponse() const;
     void      SetPassword( const std::string& aPassword ) const;
     void      Cancel() const;

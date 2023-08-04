@@ -109,6 +109,13 @@ void GREETD_CLIENT::GetResponseFmServer()
 }
 
 
+void GREETD_CLIENT::CommunicateWithServer()
+{
+    SendRequestToServer();
+    GetResponseFmServer();
+}
+
+
 RESPONSE* GREETD_CLIENT::GetResponse() const
 {
     return m_response;

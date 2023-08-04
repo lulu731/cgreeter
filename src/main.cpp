@@ -27,8 +27,7 @@ int main( int argc, char* argv[] )
                 client.InitFlowMgr( username );
                 client.Connect();
 
-                client.SendRequestToServer();
-                client.GetResponseFmServer();
+                client.CommunicateWithServer();
 
                 if( client.GetResponse()->IsAuthMessage() )
                 {
@@ -36,19 +35,18 @@ int main( int argc, char* argv[] )
                     std::string password;
                     std::cin >> password;
                     client.SetPassword( password );
-                    client.SendRequestToServer();
-                    client.GetResponseFmServer();
+                    client.CommunicateWithServer();
 
                     if( client.GetResponse()->IsSuccess() )
                     {
                         const std::vector<std::string> aCommand{ Cmd };
                         client.StartSession( aCommand );
-                        client.SendRequestToServer();
-                        client.GetResponseFmServer();
+                        client.CommunicateWithServer();
                         return EXIT_SUCCESS;
                     }
                 }
-                client.SendRequestToServer(); //Error : should be a cancel request
+                //Error : a cancel request should be sent
+                client.CommunicateWithServer();
                 client.CloseSocket();
             }
         }
