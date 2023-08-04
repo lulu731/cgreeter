@@ -40,5 +40,4 @@ public:
     void      CloseSocket();
 };
 
-
 #endif // _CLIENT_HPP

@@ -90,6 +90,8 @@ void GREETD_CLIENT::SendRequestToServer()
 }
 
 
+const int MAX_REPLY_SIZE = 1024;
+
 void GREETD_CLIENT::GetResponseFmServer()
 {
     char reply_bytes[4];
@@ -98,7 +100,7 @@ void GREETD_CLIENT::GetResponseFmServer()
     size_t reply_size = 0;
     FmNativeByteOrder( reply_bytes, &reply_size );
 
-    char reply[reply_size + 1];
+    char reply[MAX_REPLY_SIZE];
     reply[reply_size] = '\0';
     Read( reply, reply_size );
 
