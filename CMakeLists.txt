@@ -10,6 +10,10 @@ set( CMAKE_CXX_FLAGS_REPORT
     "-g -O0 -Wall -fprofile-arcs -ftest-coverage"
 )
 
+if(Boost_INCLUDE_DIRS)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
 add_subdirectory( lib )
 add_subdirectory( src )
 
