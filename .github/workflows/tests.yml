@@ -8,6 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install boost
+        uses: MarkusJx/install-boost@v2.4.1
+        id: install-boost
+        with:
+      # REQUIRED: Specify the required boost version
+      # A list of supported versions can be found here:
+      # https://github.com/MarkusJx/prebuilt-boost/blob/main/versions-manifest.json
+          boost_version: 1.81.0
       - name: Build & Test
         uses: ashutoshvarma/action-cmake-build@master
         with:
