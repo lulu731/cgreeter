@@ -1,0 +1,23 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  test:
+    name: cgreeter Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build & Test
+        uses: ashutoshvarma/action-cmake-build@master
+        with:
+          build-dir: ${{ runner.workspace }}/build
+          # will set the CC & CXX for cmake
+          cc: gcc
+          cxx: g++
+          build-type: Release
+          # Extra options pass to cmake while configuring project
+          configure-options: -DADD_QA=ON
+          run-test: true
+          # run build using '-j [parallel]' to use multiple threads to build
+          parallel: 14
