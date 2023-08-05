@@ -1,3 +1,8 @@
+# Directories
+build*/
+.vscode/
+Testing/
+
 # Prerequisites
 *.d
 
