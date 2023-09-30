@@ -20,6 +20,10 @@ int main( int argc, char* argv[] )
         while( true )
         {
             {
+                std::cout << "Welcome to cgreeter !" << std::endl;
+                std::cout << "-*-*-*-*-*-*-*-*-*-*-" << std::endl;
+                std::cout << std::endl;
+
                 GREETD_CLIENT client;
                 std::string   username;
                 std::cout << "Enter username: ";
@@ -31,7 +35,7 @@ int main( int argc, char* argv[] )
 
                 if( client.GetResponse()->IsAuthMessage() )
                 {
-                    std::cout << "Enter password: ";
+                    std::cout << client.GetResponse()->GetFieldDescription() << " ";
                     std::string password;
                     std::cin >> password;
                     client.SetPassword( password );
@@ -44,10 +48,13 @@ int main( int argc, char* argv[] )
                         client.CommunicateWithServer();
                         return EXIT_SUCCESS;
                     }
+                    else
+                    {
+                        std::cout << client.GetResponse()->GetFieldType() << " "
+                                  << client.GetResponse()->GetFieldDescription() << std::endl;
+                        return EXIT_FAILURE;
+                    }
                 }
-                //Error : a cancel request should be sent
-                client.CommunicateWithServer();
-                client.CloseSocket();
             }
         }
         return EXIT_FAILURE;
